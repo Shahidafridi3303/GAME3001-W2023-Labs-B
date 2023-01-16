@@ -14,7 +14,7 @@ PlayScene::PlayScene()
 }
 
 PlayScene::~PlayScene()
-= default;
+= default; 
 
 void PlayScene::Draw()
 {
@@ -24,6 +24,17 @@ void PlayScene::Draw()
 
 void PlayScene::Update()
 {
+	// update player
+	m_pPlayer->Update();
+
+	// check distance between player and right end of screen
+	float distance = Util::Distance(m_pPlayer->GetTransform()->position, glm::vec2(800, m_pPlayer->GetTransform()->position.y));
+	if (distance < m_closeDistance)
+	{
+		// change to end scene
+		Game::Instance().ChangeSceneState(SceneState::END);
+	}
+
 	UpdateDisplayList();
 }
 
@@ -51,9 +62,27 @@ void PlayScene::HandleEvents()
 			m_pPlayer->GetTransform()->position += glm::vec2(5.0f, 0.0f);
 			m_playerFacingRight = true;
 		}
+		else if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_W))
+		{
+			m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_RUN_UP);
+			m_pPlayer->GetTransform()->position -= glm::vec2(0.0f, 5.0f);
+		}
+		else if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_S))
+		{
+			m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_RUN_DOWN);
+			m_pPlayer->GetTransform()->position += glm::vec2(0.0f, 5.0f);
+		}
 		else
 		{
-			if (m_playerFacingRight)
+			if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_W))
+    {
+        m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_IDLE_UP);
+    }
+    else if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_S))
+    {
+        m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_IDLE_DOWN);
+    }
+			else if (m_playerFacingRight)
 			{
 				m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_IDLE_RIGHT);
 			}
@@ -118,8 +147,8 @@ void PlayScene::GUI_Function() const
 		{
 			m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_RUN_LEFT);
 		}
-
 		m_pPlayer->GetTransform()->position = glm::vec2(float2[0], float2[1]);
+	
 	}
 	
 	ImGui::End();
