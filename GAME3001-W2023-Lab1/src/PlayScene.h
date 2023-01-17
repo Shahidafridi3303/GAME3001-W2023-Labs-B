@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 #include "Player.h"
+//#include "string.h"
 
 class PlayScene : public Scene
 {
