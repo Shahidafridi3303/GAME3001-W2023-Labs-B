@@ -3,6 +3,7 @@
 #define __PLAY_SCENE__
 
 #include "Scene.h"
+#include "Target.h"
 
 class PlayScene : public Scene
 {
@@ -21,6 +22,9 @@ private:
 	void GUI_Function() const;
 	std::string m_guiTitle;
 	glm::vec2 m_mousePosition;
+
+	//Game Object for the Scene
+	Target* m_pTarget;
 };
 
 #endif /* defined (__PLAY_SCENE__) */
