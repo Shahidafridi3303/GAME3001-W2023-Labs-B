@@ -3,7 +3,6 @@
 #define __PLAY_SCENE__
 
 #include "Scene.h"
-#include "Player.h"
 
 class PlayScene : public Scene
 {
@@ -18,16 +17,10 @@ public:
 	virtual void HandleEvents() override;
 	virtual void Start() override;
 private:
-
 	// IMGUI Function
 	void GUI_Function() const;
 	std::string m_guiTitle;
-	
 	glm::vec2 m_mousePosition;
-
-	float m_closeDistance = 50.0f;
-	Player* m_pPlayer;
-	bool m_playerFacingRight;
 };
 
 #endif /* defined (__PLAY_SCENE__) */
