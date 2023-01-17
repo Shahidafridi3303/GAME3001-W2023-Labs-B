@@ -58,7 +58,8 @@ void PlayScene::Start()
 	m_guiTitle = "Play Scene";
 
 	//Add the Target to the Scene
-	m_pTarget = new Target();
+	m_pTarget = new Target(); //instantiating an object of type Target
+	AddChild(m_pTarget);
 
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }
@@ -73,9 +74,11 @@ void PlayScene::GUI_Function() const
 	
 	ImGui::Begin("GAME3001 -W2023 - Lab2", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
-	if(imGui::Button("Unused Button"))
+	static float position[2] = { m_pTarget->GetTransform()->position.x,
+		m_pTarget->GetTransform()->position.y };
+	if(ImGui::SliderFloat2("Target Position", position, 0.0f, 800.0f))
 	{
-		std::cout << "Clicked Unused Button" << std::endl;
+		m_pTarget->GetTransform()->position = glm::vec2(position[0], position[1]);
 	}
 	
 	ImGui::End();
