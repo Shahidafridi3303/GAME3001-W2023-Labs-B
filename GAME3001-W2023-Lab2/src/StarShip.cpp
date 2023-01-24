@@ -9,7 +9,7 @@ StarShip::StarShip()
 	SetWidth(static_cast<int>(size.x));
 	SetHeight(static_cast<int>(size.y));
 	GetTransform()->position = glm::vec2(100.0f, 100.0f);
-	GetRigidBody()->velocity = glm::vec2(0, 0) ;
+	GetRigidBody()->velocity = glm::vec2(0, 0);
 	GetRigidBody()->isColliding = false;
 
 	SetType(GameObjectType::STARSHIP);
