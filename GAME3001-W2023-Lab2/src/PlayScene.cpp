@@ -70,7 +70,7 @@ void PlayScene::GUI_Function() const
 	ImGui::NewFrame();
 
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
-	//ImGui::ShowDemoWindow();
+	// ImGui::ShowDemoWindow();
 	
 	ImGui::Begin("GAME3001 -W2023 - Lab2", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
