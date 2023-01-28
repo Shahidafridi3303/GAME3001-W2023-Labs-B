@@ -12,23 +12,23 @@ StarShip::StarShip()
 	GetRigidBody()->velocity = glm::vec2(0, 0);
 	GetRigidBody()->isColliding = false;
 
-	SetType(GameObjectType::AGENT);
+	SetType(GameObjectType::STARSHIP);
 }
-
 StarShip::~StarShip()
 = default;
 
 void StarShip::Draw()
 {
 	// draw the target
-	TextureManager::Instance().Draw("starship",
+	TextureManager::Instance().Draw("starship", 
 		GetTransform()->position, 0, 255, true);
 }
-
 void StarShip::Update()
 {
+	
 }
-
 void StarShip::Clean()
 {
+	
 }
+

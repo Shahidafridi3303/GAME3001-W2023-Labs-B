@@ -1,6 +1,7 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "EventManager.h"
+#include "StarShip.h"
 
 // required for IMGUI
 #include "imgui.h"
@@ -14,7 +15,7 @@ PlayScene::PlayScene()
 }
 
 PlayScene::~PlayScene()
-= default; 
+= default;
 
 void PlayScene::Draw()
 {
@@ -35,6 +36,7 @@ void PlayScene::Clean()
 void PlayScene::HandleEvents()
 {
 	EventManager::Instance().Update();
+	
 
 	if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_ESCAPE))
 	{
@@ -57,15 +59,15 @@ void PlayScene::Start()
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 
-	//Add the Target to the Scene
-	m_pTarget = new Target(); //instantiating an object of type Target
+	//add the target to scene
+	m_pTarget = new Target(); // instating an object of type target
 	AddChild(m_pTarget);
 
-	// Add the StarShip to the scene
-	m_pStarShip = new StarShip();
-	m_pStarShip->GetTransform()->position = glm::vec2(400.0f, 300.0f);
-	AddChild(m_pStarShip);
-
+	// Adding Star SHip
+	m_pStarship = new StarShip();
+	m_pStarship->GetTransform()->position = glm::vec2(400.0f, 300.0f);
+	AddChild(m_pStarship);
+	
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
@@ -75,16 +77,19 @@ void PlayScene::GUI_Function() const
 	ImGui::NewFrame();
 
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
-	// ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("GAME3001 -W2023 - Lab2", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
+	ImGui::Begin("GAME3001 AI Lab 2 :)", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
-	static float position[2] = { m_pTarget->GetTransform()->position.x,
-		m_pTarget->GetTransform()->position.y };
-	if(ImGui::SliderFloat2("Target Position", position, 0.0f, 800.0f))
+	static float position[2] = { m_pTarget->GetTransform()->position.x, m_pTarget->GetTransform()->position.y };
+	if(ImGui::SliderFloat2("Target Position",position,0.0f,800.0f))
 	{
 		m_pTarget->GetTransform()->position = glm::vec2(position[0], position[1]);
 	}
-	
+
+	/*if (ImGui::Button("Unused button"))
+	{
+		std::cout << "Clicked Unused button" << std::endl;
+	}*/
 	ImGui::End();
 }

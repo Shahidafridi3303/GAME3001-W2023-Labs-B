@@ -24,9 +24,10 @@ private:
 	std::string m_guiTitle;
 	glm::vec2 m_mousePosition;
 
-	//Game Object for the Scene
+	// Ganme objects for sce
 	Target* m_pTarget;
-	StarShip* m_pStarShip;
+	StarShip* m_pStarship;
+
 };
 
 #endif /* defined (__PLAY_SCENE__) */
