@@ -1,8 +1,9 @@
 #pragma once
 #ifndef __STARSHIP__
 #define __STARSHIP__
-#include "DisplayObject.h"
-class StarShip : public DisplayObject
+
+#include "Agent.h"
+class StarShip : public Agent // Changed type
 {
 public:
 	//constructor Functions
@@ -20,4 +21,4 @@ private:
 
 };
 
-#endif
+#endif /* defined (__STARSHIP__)*/
