@@ -20,12 +20,32 @@ PlayScene::~PlayScene()
 void PlayScene::Draw()
 {
 	DrawDisplayList();
+	if (m_bDebugView)
+	{
+		// Draw Collider Bounds for the Target
+		Util::DrawCircle(m_pTarget->GetTransform()->position, m_pTarget->GetWidth() * 0.5f);
+
+		if (m_pStarShip->IsEnabled())
+		{
+			Util::DrawRect(m_pStarShip->GetTransform()->position -
+				glm::vec2(m_pStarShip->GetWidth() * 0.5f, m_pStarShip->GetHeight() * 0.5f),
+				m_pStarShip->GetWidth(), m_pStarShip->GetHeight());
+
+			CollisionManager::RotateAABB(m_pStarShip, m_pStarShip->GetCurrentHeading());
+		}
+	}
+
 	SDL_SetRenderDrawColor(Renderer::Instance().GetRenderer(), 255, 255, 255, 255);
 }
 
 void PlayScene::Update()
 {
 	UpdateDisplayList();
+
+	if(m_pStarShip->IsEnabled())
+	{
+		CollisionManager::CircleAABBCheck(m_pTarget, m_pStarShip);
+	}
 }
 
 void PlayScene::Clean()
@@ -70,8 +90,12 @@ void PlayScene::Start()
 	m_pStarShip->GetTransform()->position = glm::vec2(100.0f, 400.0f);
 	m_pStarShip->SetTargetPosition(m_pTarget->GetTransform()->position);
 	m_pStarShip->SetCurrentDirection(glm::vec2(1.0f, 0.0f)); // facing right
-	//m_pStarShip->SetEnabled(false);
+	m_pStarShip->SetEnabled(false);
 	AddChild(m_pStarShip);
+
+	// Preload Sounds
+
+	SoundManager::Instance().Load("../Assets/Audio/yay.ogg", "yay", SoundType::SOUND_SFX);
 	
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }
@@ -115,6 +139,46 @@ void PlayScene::GUI_Function()
 		m_pStarShip->SetEnabled(toggleSeek);
 	}
 
+	ImGui::Separator();
+
+	static float acceleration = m_pStarShip->GetAccelerationRate();
+	if (ImGui::SliderFloat("Acceleration Rate", &acceleration, 0.0f, 50.0f))
+	{
+		m_pStarShip->SetAccelerationRate(acceleration);
+		m_pStarShip->GetRigidBody()->acceleration =
+			m_pStarShip->GetCurrentDirection()* m_pStarShip->GetAccelerationRate();
+	}
+
+	ImGui::Separator();
+
+	static float turn_rate = m_pStarShip->GetTurnRate();
+	if (ImGui::SliderFloat("Turn Rate", &turn_rate, 0.0f, 20.0f))
+	{
+		m_pStarShip->SetTurnRate(turn_rate);
+		
+	}
+
+	ImGui::Separator();
+	if (ImGui::Button("Reset"))
+	{
+		// reset StarShip's Position
+		m_pStarShip->GetTransform()->position = glm::vec2(100.0f, 400.0f);
+		// reset the Target's Position
+		m_pTarget->GetTransform()->position = glm::vec2(500.0f, 100.0f);
+
+		// Reset current Heading (orientation)
+		m_pStarShip->SetCurrentHeading(0.0f);
+		m_pStarShip->SetCurrentDirection(glm::vec2(1.0f, 0.0f));
+
+		// Reset Acceleration Rate
+		m_pStarShip->SetAccelerationRate(4.0f);
+
+		// Reset the Turn Rate
+		m_pStarShip->SetTurnRate(5.0f);
+
+		// Reset the Target for the StarShip
+		m_pStarShip->SetTargetPosition(m_pTarget->GetTransform()->position);
+	}
 
 	ImGui::End();
 }
