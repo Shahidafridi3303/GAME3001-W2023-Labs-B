@@ -76,25 +76,44 @@ void PlayScene::Start()
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
-void PlayScene::GUI_Function() const
+void PlayScene::GUI_Function()
 {
 	// Always open with a NewFrame
 	ImGui::NewFrame();
 
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("GAME3001 AI Lab 2 :)", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
+	ImGui::Begin("GAME3001 - W2023 - Lab2 :)", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
-	static float position[2] = { m_pTarget->GetTransform()->position.x, m_pTarget->GetTransform()->position.y };
+	ImGui::Separator();
+
+	// Debug Properties
+	static bool toggleDebug = false;
+	if(ImGui::Checkbox("Toggle Debug View", &toggleDebug))
+	{
+		m_bDebugView = toggleDebug;
+	}
+
+	ImGui::Separator();
+
+	// Target Properties
+	static float position[2] = { m_pTarget->GetTransform()->position.x,
+		m_pTarget->GetTransform()->position.y };
 	if(ImGui::SliderFloat2("Target Position",position,0.0f,800.0f))
 	{
 		m_pTarget->GetTransform()->position = glm::vec2(position[0], position[1]);
 	}
 
-	/*if (ImGui::Button("Unused button"))
+	ImGui::Separator();
+
+	// StarShip Properties
+	static bool toggleSeek = m_pStarShip->IsEnabled();
+	if(ImGui::Checkbox("Toggle Seek", &toggleSeek))
 	{
-		std::cout << "Clicked Unused button" << std::endl;
-	}*/
+		m_pStarShip->SetEnabled(toggleSeek);
+	}
+
+
 	ImGui::End();
 }

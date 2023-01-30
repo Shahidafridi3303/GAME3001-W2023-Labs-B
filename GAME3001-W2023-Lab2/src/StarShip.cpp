@@ -1,5 +1,8 @@
 #include "StarShip.h"
+
+#include "Game.h"
 #include "TextureManager.h"
+#include "Util.h"
 
 StarShip::StarShip()
 {
@@ -92,5 +95,29 @@ void StarShip::LookWhereYoureGoing(glm::vec2 target_direction)
 
 void StarShip::m_move()
 {
-}
+	//						final Position     Position Term     Velocity      Acceleration Term
+	// Kinematic Equation-> Pf                 = Pi +            Vi * (time) + (0.5) * Ai(time * time)
+		 
+	const float dt = Game::Instance().GetDeltaTime();
 
+	// accessing the position Term
+	const glm::vec2 initial_position = GetTransform()->position;
+
+	// compute the velocity Term
+	const glm::vec2 velocity_term =  GetRigidBody()->velocity * dt;
+
+	// compute the acceleration Term
+	const glm::vec2 acceleration_term = GetRigidBody()->acceleration * 0.5f; // * dt * dt
+
+
+	// compute the new position
+	glm::vec2 final_position = initial_position + velocity_term + acceleration_term;
+
+	GetTransform()->position = final_position;
+
+	// add our acceleration to velocity
+	GetRigidBody()->velocity += GetRigidBody()->acceleration;
+
+	// clamp our velocity at max speed
+	GetRigidBody()->velocity = Util::Clamp(GetRigidBody()->velocity, GetMaxSpeed());
+}

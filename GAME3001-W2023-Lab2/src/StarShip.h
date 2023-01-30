@@ -43,6 +43,7 @@ private:
 
 	// private function
 	void m_move();
+
 };
 
 #endif /* defined (__STARSHIP__)*/
