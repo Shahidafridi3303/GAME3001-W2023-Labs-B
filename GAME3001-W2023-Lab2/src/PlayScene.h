@@ -26,8 +26,10 @@ private:
 
 	// Ganme objects for sce
 	Target* m_pTarget;
-	StarShip* m_pStarship;
+	StarShip* m_pStarShip; 
 
+	// Debugging Variables
+	bool m_bDebugView;
 };
 
 #endif /* defined (__PLAY_SCENE__) */

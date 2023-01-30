@@ -58,15 +58,20 @@ void PlayScene::Start()
 {
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
+	m_bDebugView = false; // turn off debug colliders
 
 	//add the target to scene
-	m_pTarget = new Target(); // instating an object of type target
+	m_pTarget = new Target(); // instantiate an object of type target
+	m_pTarget->GetTransform()->position = glm::vec2(500.0f, 100.0f);
 	AddChild(m_pTarget);
 
-	// Adding Star SHip
-	m_pStarship = new StarShip();
-	m_pStarship->GetTransform()->position = glm::vec2(400.0f, 300.0f);
-	AddChild(m_pStarship);
+	// Add the StarShip to the Scene
+	m_pStarShip = new StarShip();
+	m_pStarShip->GetTransform()->position = glm::vec2(100.0f, 400.0f);
+	m_pStarShip->SetTargetPosition(m_pTarget->GetTransform()->position);
+	m_pStarShip->SetCurrentDirection(glm::vec2(1.0f, 0.0f)); // facing right
+	//m_pStarShip->SetEnabled(false);
+	AddChild(m_pStarShip);
 	
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }
