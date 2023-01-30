@@ -36,9 +36,10 @@ void StarShip::Draw()
 	TextureManager::Instance().Draw("starship", 
 		GetTransform()->position, static_cast<double>(GetCurrentHeading()), 255, true);
 }
+
 void StarShip::Update()
 {
-	
+	m_move();
 }
 void StarShip::Clean()
 {
@@ -82,19 +83,47 @@ void StarShip::SetAccelerationRate(float rate)
 
 void StarShip::SetDesiredVelocity(glm::vec2 target_position)
 {
-
+	SetTargetPosition(target_position);
+	m_desiredVelocity = Util::Normalize(target_position - GetTransform()->position) * GetMaxSpeed(); 
+	GetRigidBody()->velocity = m_desiredVelocity - GetRigidBody()->velocity;
 }
 
 void StarShip::Seek()
 {
+	SetDesiredVelocity(GetTargetPosition());
+
+	const glm::vec2 steering_direction = GetDesiredVelocity() - GetCurrentDirection();
+
+	LookWhereYoureGoing(steering_direction);
+
+	GetRigidBody()->acceleration = GetCurrentDirection() * GetAccelerationRate(); 
 }
 
 void StarShip::LookWhereYoureGoing(glm::vec2 target_direction)
 {
+	const float target_rotation = Util::SignedAngle(GetCurrentDirection(), target_direction);
+
+	const float turn_sensitivity = 5.0f;
+
+	if (abs(target_rotation) > turn_sensitivity)
+	{
+		if (target_rotation > 0.0f)
+		{
+			// turn right
+			SetCurrentHeading(GetCurrentHeading() + GetTurnRate());
+		}
+		else if (target_rotation < 0.0f)
+		{
+			// turn left
+			SetCurrentHeading(GetCurrentHeading() - GetTurnRate());
+		}
+	}
 }
 
 void StarShip::m_move()
 {
+	Seek();
+
 	//						final Position     Position Term     Velocity      Acceleration Term
 	// Kinematic Equation-> Pf                 = Pi +            Vi * (time) + (0.5) * Ai(time * time)
 		 
