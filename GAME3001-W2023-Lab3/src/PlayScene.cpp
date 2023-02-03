@@ -24,6 +24,12 @@ void PlayScene::Draw()
 		// Draw Collider Bounds for the Target
 		Util::DrawCircle(m_pTarget->GetTransform()->position, m_pTarget->GetWidth() * 0.5f);
 
+		// Draw Obstacle Bounds
+		Util::DrawRect(m_pObstacle->GetTransform()->position -
+			glm::vec2(m_pObstacle->GetWidth() * 0.5f, m_pObstacle->GetHeight() *0.5f),
+			m_pObstacle->GetWidth(), m_pObstacle->GetHeight());
+
+
 		if(m_pStarShip->IsEnabled())
 		{
 			Util::DrawRect(m_pStarShip->GetTransform()->position -
@@ -44,6 +50,8 @@ void PlayScene::Update()
 	if(m_pStarShip->IsEnabled())
 	{
 		CollisionManager::CircleAABBCheck(m_pTarget, m_pStarShip);
+
+	    CollisionManager::AABBCheck(m_pStarShip,m_pObstacle);
 	}
 }
 
@@ -102,6 +110,8 @@ void PlayScene::Start()
 	SoundManager::Instance().Load("../Assets/Audio/thunder.ogg",
 		     "thunder", SoundType::SOUND_SFX);
 
+	SoundManager::Instance().SetAllVolume(50);
+
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
@@ -145,15 +155,6 @@ void PlayScene::GUI_Function()
 		m_pObstacle->GetTransform()->position = glm::vec2(obstacle_position[0], obstacle_position[1]);
 	}
 	ImGui::Separator();
-
-	/*// Obstacle Properties
-	static float obstacle_position[2] = { m_pObstacle->GetTransform()->position.x,
-		m_pObstacle->GetTransform()->position.y };
-	if (ImGui::SliderFloat2("Obstacle Position", obstacle_position, 0.0f, 800.0f))
-	{
-		m_pObstacle)->GetTransform()->position = glm::vec2(obstacle_position[0], obstacle_position[1]);
-		m_pStarShip->SetTargetPosition(m_pTarget->GetTransform()->position);
-	}*/
 
 	// StarShip Properties
 	static bool toggleSeek = m_pStarShip->IsEnabled();
