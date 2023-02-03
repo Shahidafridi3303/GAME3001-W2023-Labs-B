@@ -28,7 +28,7 @@ public:
 	[[nodiscard]] glm::vec2 GetMiddleLOSEndPoint() const;
 	[[nodiscard]] glm::vec2 GetRightLOSEndPoint() const;
 	bool* GetCollisionWhiskers(); // return the entire array
-	glm::vec4 GetLineColor(int index) const;
+	glm::vec4 GetLineColour(int index) const;
 	float GetWhiskerAngle() const;
 
 	// setters

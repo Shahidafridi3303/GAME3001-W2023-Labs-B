@@ -26,9 +26,8 @@ void PlayScene::Draw()
 
 		// Draw Obstacle Bounds
 		Util::DrawRect(m_pObstacle->GetTransform()->position -
-			glm::vec2(m_pObstacle->GetWidth() * 0.5f, m_pObstacle->GetHeight() *0.5f),
+			glm::vec2(m_pObstacle->GetWidth() * 0.5f, m_pObstacle->GetHeight() * 0.5f),
 			m_pObstacle->GetWidth(), m_pObstacle->GetHeight());
-
 
 		if(m_pStarShip->IsEnabled())
 		{
@@ -37,6 +36,14 @@ void PlayScene::Draw()
 				m_pStarShip->GetWidth(), m_pStarShip->GetHeight());
 
 			CollisionManager::RotateAABB(m_pStarShip, m_pStarShip->GetCurrentHeading());
+
+			// draw whiskers
+			Util::DrawLine(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetLeftLOSEndPoint(), m_pStarShip->GetLineColour(0));
+			Util::DrawLine(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetMiddleLOSEndPoint(), m_pStarShip->GetLineColour(1));
+			Util::DrawLine(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetRightLOSEndPoint(), m_pStarShip->GetLineColour(2));
 		}
 	}
 
@@ -52,6 +59,35 @@ void PlayScene::Update()
 		CollisionManager::CircleAABBCheck(m_pTarget, m_pStarShip);
 
 	    CollisionManager::AABBCheck(m_pStarShip,m_pObstacle);
+
+		// obstacle information (aliases)
+		const auto boxWidth = m_pObstacle->GetWidth();
+		const int halfBoxWidth = boxWidth * 0.5f;
+		const auto boxHeight = m_pObstacle->GetHeight();
+		const int halfBoxHeight = boxHeight * 0.5f;
+		const auto boxStart =
+			m_pObstacle->GetTransform()->position - glm::vec2(halfBoxWidth, halfBoxHeight);
+
+		// check each whisker to see if it is colliding with the obstacle
+		m_pStarShip->GetCollisionWhiskers()[0] =
+			CollisionManager::LineRectCheck(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetLeftLOSEndPoint(),
+				boxStart, boxWidth, boxHeight);
+		m_pStarShip->GetCollisionWhiskers()[1] =
+			CollisionManager::LineRectCheck(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetMiddleLOSEndPoint(),
+				boxStart, boxWidth, boxHeight);
+		m_pStarShip->GetCollisionWhiskers()[2] =
+			CollisionManager::LineRectCheck(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetRightLOSEndPoint(),
+				boxStart, boxWidth, boxHeight);
+
+		for (int i = 0; i < 3; i++)
+		{
+			m_pStarShip->SetLineColour(i,
+				(m_pStarShip->GetCollisionWhiskers()[i]) ?
+				glm::vec4(1, 0, 0, 1) : glm::vec4(0, 1,  0, 1));
+		}
 	}
 }
 
@@ -93,7 +129,7 @@ void PlayScene::Start()
 
 	// Add the StarShip to the Scene
 	m_pStarShip = new StarShip();
-	m_pStarShip->GetTransform()->position = glm::vec2(100.0f, 300.0f);
+	m_pStarShip->GetTransform()->position = glm::vec2(100.0f, 400.0f);
 	m_pStarShip->SetTargetPosition(m_pTarget->GetTransform()->position);
 	m_pStarShip->SetCurrentDirection(glm::vec2(1.0f, 0.0f)); // facing right
 	m_pStarShip->SetEnabled(false);
@@ -110,7 +146,7 @@ void PlayScene::Start()
 	SoundManager::Instance().Load("../Assets/Audio/thunder.ogg",
 		     "thunder", SoundType::SOUND_SFX);
 
-	SoundManager::Instance().SetAllVolume(50);
+	SoundManager::Instance().SetAllVolume(50);  
 
 	ImGuiWindowFrame::Instance().SetGuiFunction(std::bind(&PlayScene::GUI_Function, this));
 }

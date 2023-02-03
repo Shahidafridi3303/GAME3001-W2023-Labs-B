@@ -79,7 +79,7 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 
 			switch (object2->GetType())
 			{
-			
+
 			case GameObjectType::OBSTACLE:
 				std::cout << "Collision with Obstacle!" << std::endl;
 				SoundManager::Instance().PlaySound("thunder", 0);

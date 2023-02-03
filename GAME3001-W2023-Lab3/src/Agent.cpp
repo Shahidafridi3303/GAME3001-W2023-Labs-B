@@ -4,6 +4,17 @@
 
 Agent::Agent()
 {
+	// Initialize the whisker color
+	m_lineColour[0] = glm::vec4(0, 1, 0, 1); // green color for left whisker
+	m_lineColour[1] = glm::vec4(0, 1, 0, 1); // green color for middle whisker
+	m_lineColour[2] = glm::vec4(0, 1, 0, 1); // green color for right whisker
+
+	// Initialize the whisker Collision booleans
+	m_collisionWhiskers[0] = false;
+	m_collisionWhiskers[1] = false;
+	m_collisionWhiskers[2] = false;
+
+	m_whiskerAngle = 45;
 }
 
 Agent::~Agent()
@@ -59,7 +70,7 @@ bool* Agent::GetCollisionWhiskers()
 	return m_collisionWhiskers;
 }
 
-glm::vec4 Agent::GetLineColor(const int index) const
+glm::vec4 Agent::GetLineColour(const int index) const
 {
 	return m_lineColour[index];
 }
@@ -109,7 +120,7 @@ void Agent::UpdateWhiskers(const float angle)
 	// right whisker
 	x = sin((GetCurrentHeading() + m_whiskerAngle + 90.0f) * Util::Deg2Rad);
 	y = cos((GetCurrentHeading() + m_whiskerAngle + 90.0f) * Util::Deg2Rad);
-	SetLeftLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.75f);
+	SetRightLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.75f);
 }
 
 void Agent::SetTargetPosition(const glm::vec2 new_position)
