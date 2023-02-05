@@ -12,7 +12,7 @@ Obstacle::Obstacle()
 	SetWidth(static_cast<int>(size.x));
 	SetHeight(static_cast<int>(size.y));
 
-	GetTransform()->position = glm::vec2(450.0f, 300.0f);
+	GetTransform()->position = glm::vec2(422.0f, 275.0f);
 	setIsCentered(true);
 
 	SetType(GameObjectType::OBSTACLE);

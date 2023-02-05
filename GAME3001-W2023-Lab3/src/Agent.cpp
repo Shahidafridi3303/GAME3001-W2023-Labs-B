@@ -134,27 +134,27 @@ void Agent::UpdateWhiskers(const float angle)
 	m_whiskerAngle = angle;
 
 	// centre / middle whisker
-	SetMiddleLOSEndPoint(GetTransform()->position + GetCurrentDirection() * GetLOSDistance());
+	SetMiddleLOSEndPoint(GetTransform()->position + GetCurrentDirection() * GetLOSDistance() * 0.55f);
 
 	// left whisker
-	float x = sin((GetCurrentHeading() - m_whiskerAngle + 90.0f) * Util::Deg2Rad);
-	float y = cos((GetCurrentHeading() - m_whiskerAngle + 90.0f) * Util::Deg2Rad);
-	SetLeftLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.75f);
+	float x = sin((GetCurrentHeading() - m_whiskerAngle + 114.0f) * Util::Deg2Rad);
+	float y = cos((GetCurrentHeading() - m_whiskerAngle + 114.0f) * Util::Deg2Rad);
+	SetLeftLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.55f);
 
 	// right whisker
-	x = sin((GetCurrentHeading() + m_whiskerAngle + 90.0f) * Util::Deg2Rad);
-	y = cos((GetCurrentHeading() + m_whiskerAngle + 90.0f) * Util::Deg2Rad);
-	SetRightLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.75f);
+	x = sin((GetCurrentHeading() + m_whiskerAngle + 66.0f) * Util::Deg2Rad);
+	y = cos((GetCurrentHeading() + m_whiskerAngle + 66.0f) * Util::Deg2Rad);
+	SetRightLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.55f);
 
 	// left left whisker
-	x = sin((GetCurrentHeading() - m_whiskerAngle + 75.0f) * Util::Deg2Rad);
-	y = cos((GetCurrentHeading() - m_whiskerAngle + 75.0f) * Util::Deg2Rad);
-	SetLeftleftLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.75f);
+	x = sin((GetCurrentHeading() - m_whiskerAngle + 125.0f) * Util::Deg2Rad);
+	y = cos((GetCurrentHeading() - m_whiskerAngle + 125.0f) * Util::Deg2Rad);
+	SetLeftleftLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.55f);
 
 	// right right whisker
-	x = sin((GetCurrentHeading() + m_whiskerAngle + 75.0f) * Util::Deg2Rad);
-	y = cos((GetCurrentHeading() + m_whiskerAngle + 75.0f) * Util::Deg2Rad);
-	SetRightrightLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.75f);
+	x = sin((GetCurrentHeading() + m_whiskerAngle + 55.0f) * Util::Deg2Rad);
+	y = cos((GetCurrentHeading() + m_whiskerAngle + 55.0f) * Util::Deg2Rad);
+	SetRightrightLOSEndPoint(GetTransform()->position + glm::vec2(x, -y) * GetLOSDistance() * 0.55f);
 }
 
 void Agent::SetTargetPosition(const glm::vec2 new_position)

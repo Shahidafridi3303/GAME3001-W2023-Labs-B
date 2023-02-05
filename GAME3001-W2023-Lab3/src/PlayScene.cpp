@@ -128,7 +128,7 @@ void PlayScene::Start()
 
 	// Add the Target to the Scene
 	m_pTarget = new Target(); // instantiate an object of type Target
-	m_pTarget->GetTransform()->position = glm::vec2(650.0f, 300.0f);
+	m_pTarget->GetTransform()->position = glm::vec2(500.0f, 130.0f);
 	AddChild(m_pTarget, 1, 2);
 
 	// Add the StarShip to the Scene
@@ -237,7 +237,7 @@ void PlayScene::GUI_Function()
 		m_pStarShip->GetTransform()->position = glm::vec2(100.0f, 400.0f);
 
 		// reset  the Target's Position
-		m_pTarget->GetTransform()->position = glm::vec2(500.0f, 100.0f);
+		m_pTarget->GetTransform()->position = glm::vec2(500.0f, 130.0f);
 
 		// Reset current Heading (orientation)
 		m_pStarShip->SetCurrentHeading(0.0f);
