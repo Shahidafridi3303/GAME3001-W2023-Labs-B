@@ -27,6 +27,8 @@ public:
 	[[nodiscard]] glm::vec2 GetLeftLOSEndPoint() const;
 	[[nodiscard]] glm::vec2 GetMiddleLOSEndPoint() const;
 	[[nodiscard]] glm::vec2 GetRightLOSEndPoint() const;
+	[[nodiscard]] glm::vec2 GetLeftleftLOSEndPoint() const;
+	[[nodiscard]] glm::vec2 GetRightrightLOSEndPoint() const;
 	bool* GetCollisionWhiskers(); // return the entire array
 	glm::vec4 GetLineColour(int index) const;
 	float GetWhiskerAngle() const;
@@ -42,6 +44,8 @@ public:
 	void SetLeftLOSEndPoint(glm::vec2 point);
 	void SetMiddleLOSEndPoint(glm::vec2 point);
 	void SetRightLOSEndPoint(glm::vec2 point);
+	void SetLeftleftLOSEndPoint(glm::vec2 point);
+	void SetRightrightLOSEndPoint(glm::vec2 point);
 	void SetLineColour(int index, glm::vec4 colour);
 	void SetWhiskerAngle(float angle);
 
@@ -63,8 +67,10 @@ private:
 	glm::vec2 m_leftLOSEndPoint;
 	glm::vec2 m_middLeLOSEndPoint;
 	glm::vec2 m_rightLOSEndPoint;
-	glm::vec4 m_lineColour[3];
-	bool m_collisionWhiskers[3];
+	glm::vec2 m_leftleftLOSEndPoint;
+	glm::vec2 m_rightrightLOSEndPoint;
+	glm::vec4 m_lineColour[5];
+	bool m_collisionWhiskers[5];
 	float m_whiskerAngle;
 
 };

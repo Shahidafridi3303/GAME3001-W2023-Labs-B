@@ -44,6 +44,10 @@ void PlayScene::Draw()
 				m_pStarShip->GetMiddleLOSEndPoint(), m_pStarShip->GetLineColour(1));
 			Util::DrawLine(m_pStarShip->GetTransform()->position,
 				m_pStarShip->GetRightLOSEndPoint(), m_pStarShip->GetLineColour(2));
+			Util::DrawLine(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetLeftleftLOSEndPoint(), m_pStarShip->GetLineColour(3));
+			Util::DrawLine(m_pStarShip->GetTransform()->position,
+				m_pStarShip->GetRightrightLOSEndPoint(), m_pStarShip->GetLineColour(4));
 		}
 	}
 
