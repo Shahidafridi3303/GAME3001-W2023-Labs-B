@@ -134,7 +134,7 @@ void Agent::UpdateWhiskers(const float angle)
 	m_whiskerAngle = angle;
 
 	// centre / middle whisker
-	SetMiddleLOSEndPoint(GetTransform()->position + GetCurrentDirection() * GetLOSDistance() * 0.55f);
+	SetMiddleLOSEndPoint(GetTransform()->position + GetCurrentDirection() * GetLOSDistance() * 0.65f);
 
 	// left whisker
 	float x = sin((GetCurrentHeading() - m_whiskerAngle + 114.0f) * Util::Deg2Rad);
