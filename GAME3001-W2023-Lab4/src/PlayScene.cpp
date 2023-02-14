@@ -250,8 +250,8 @@ void PlayScene::GUI_Function()
 	// check if current heuristic is not the ame as the selection
 	if(m_currentHeuristic != static_cast<Heuristic>(radio))
 	{
-		(m_currentHeuristic != static_cast<Heuristic>(radio))
-			m_computeTileCosts();
+		m_currentHeuristic = static_cast<Heuristic>(radio);
+		m_computeTileCosts();
 	}
 
 	ImGui::Separator();

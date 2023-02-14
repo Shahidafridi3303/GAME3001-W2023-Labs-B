@@ -7,6 +7,7 @@
 #include "StarShip.h"
 #include "Tile.h"
 #include "Heuristic.h"
+#include "Obstacle.h"
 
 class PlayScene : public Scene
 {
@@ -40,7 +41,10 @@ private:
 	void m_buildGrid();
 	bool m_getGridEnabled() const;
 	void m_setGridEnabled(bool state);
-	void m_computeTileCosts() const; 
+	void m_computeTileCosts() const;
+
+	// obstacle array
+	Obstacle* m_pObstacles[25];
 
 	// convenience functions to convert from world space to grid space
 	Tile* m_getTile(int col, int row) const;
