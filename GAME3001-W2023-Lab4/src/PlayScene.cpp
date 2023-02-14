@@ -19,7 +19,7 @@ PlayScene::~PlayScene()
 void PlayScene::Draw()
 {
 	DrawDisplayList();
-
+	
 	SDL_SetRenderDrawColor(Renderer::Instance().GetRenderer(), 255, 255, 255, 255);
 }
 
@@ -58,7 +58,7 @@ void PlayScene::Start()
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 
-	m_buildGrid(); // construct a Grid of connected titles
+	m_buildGrid(); // construct a Grid of connected tiles
 
 	auto offset = glm::vec2(Config::TILE_SIZE * 0.5f, Config::TILE_SIZE * 0.5f);
 
@@ -66,14 +66,14 @@ void PlayScene::Start()
 	m_pTarget = new Target(); // instantiate an object of type Target
 	m_pTarget->GetTransform()->position = m_getTile(15, 11)->GetTransform()->position + offset;
 	m_pTarget->SetGridPosition(15.0f, 11.0f); // record grid space position
-	m_getTile(15, 11)->SetTileStatus(GOAL);
+	m_getTile(15, 11)->SetTileStatus(TileStatus::GOAL);
 	AddChild(m_pTarget);
 
 	// Add the StarShip to the Scene
 	m_pStarShip = new StarShip();
 	m_pStarShip->GetTransform()->position = m_getTile(1, 3)->GetTransform()->position + offset;
 	m_pStarShip->SetGridPosition(1.0f, 3.0f); // record grid space position
-	m_getTile(1, 3)->SetTileStatus(START);
+	m_getTile(1, 3)->SetTileStatus(TileStatus::START);
 	AddChild(m_pStarShip);
 
 
@@ -117,41 +117,41 @@ void PlayScene::m_buildGrid()
 			// TopMost Neighbour
 			if(row == 0)
 			{
-				tile->SetNeighbourTile(TOP_TILE, nullptr);
+				tile->SetNeighbourTile(NeighbourTile::TOP_TILE, nullptr);
 			}
 			else
 			{
-				tile->SetNeighbourTile(TOP_TILE, m_getTile(col, row - 1));
+				tile->SetNeighbourTile(NeighbourTile::TOP_TILE, m_getTile(col, row - 1));
 			}
 
 			// RightMost Neighbour
 			if(col == Config::COL_NUM - 1)
 			{
-				tile->SetNeighbourTile(RIGHT_TILE, nullptr);
+				tile->SetNeighbourTile(NeighbourTile::RIGHT_TILE, nullptr);
 			}
 			else
 			{
-				tile->SetNeighbourTile(RIGHT_TILE, m_getTile(col + 1, row));
+				tile->SetNeighbourTile(NeighbourTile::RIGHT_TILE, m_getTile(col + 1, row));
 			}
 
 			// BottomMost Neighbour
 			if (row == Config::ROW_NUM - 1)
 			{
-				tile->SetNeighbourTile(BOTTOM_TILE, nullptr);
+				tile->SetNeighbourTile(NeighbourTile::BOTTOM_TILE, nullptr);
 			}
 			else
 			{
-				tile->SetNeighbourTile(BOTTOM_TILE, m_getTile(col, row + 1));
+				tile->SetNeighbourTile(NeighbourTile::BOTTOM_TILE, m_getTile(col, row + 1));
 			}
 
 			// LeftMost Neighbour
 			if (col == 0)
 			{
-				tile->SetNeighbourTile(LEFT_TILE, nullptr);
+				tile->SetNeighbourTile(NeighbourTile::LEFT_TILE, nullptr);
 			}
 			else
 			{
-				tile->SetNeighbourTile(LEFT_TILE, m_getTile(col - 1, row));
+				tile->SetNeighbourTile(NeighbourTile::LEFT_TILE, m_getTile(col - 1, row));
 			}
 		}
 	}
@@ -165,9 +165,9 @@ bool PlayScene::m_getGridEnabled() const
 void PlayScene::m_setGridEnabled(const bool state)
 {
 	m_isGridEnabled = state;
-	for (auto tile : m_pGrid)
+	for (const auto tile : m_pGrid)
 	{
-		tile->SetEnabled(m_isGridEnabled);  // toggles each tile object
+		tile->SetEnabled(m_isGridEnabled); // toggles each tile object
 		tile->SetLabelsEnabled(m_isGridEnabled); // toggles each label object within the tile
 	}
 }
@@ -182,7 +182,7 @@ Tile* PlayScene::m_getTile(const int col, const int row) const
 	return m_pGrid[(row * Config::COL_NUM) + col];
 }
 
-Tile* PlayScene::m_getTile(glm::vec2 grid_position) const
+Tile* PlayScene::m_getTile(const glm::vec2 grid_position) const
 {
 	const auto col = grid_position.x;
 	const auto row = grid_position.y;
@@ -218,7 +218,7 @@ void PlayScene::GUI_Function()
 		static_cast<int>(m_pStarShip->GetGridPosition().x),
 		static_cast<int>(m_pStarShip->GetGridPosition().y)
 	};
-	if(ImGui::SliderInt2("Start Position", start_position, 0, Config::COL_NUM -1))
+	if(ImGui::SliderInt2("Start Position", start_position, 0, Config::COL_NUM - 1))
 	{
 		// constrain the object within max rows
 		if(start_position[1] > Config::ROW_NUM - 1)
@@ -227,15 +227,15 @@ void PlayScene::GUI_Function()
 		}
 
 		// convert grid space to world space when snapping the object
-		m_getTile(m_pStarShip->GetGridPosition())->SetTileStatus(UNVISITED); // set the tile we left to unvisited
+		m_getTile(m_pStarShip->GetGridPosition())->SetTileStatus(TileStatus::UNVISITED); // set the tile we left to unvisited
 		m_pStarShip->GetTransform()->position =
 			m_getTile(start_position[0], start_position[1])->GetTransform()->position + offset;
 		m_pStarShip->SetGridPosition(start_position[0], start_position[1]);
-		m_getTile(m_pStarShip->GetGridPosition())->SetTileStatus(START);
+		m_getTile(m_pStarShip->GetGridPosition())->SetTileStatus(TileStatus::START);
 	}
 
 	ImGui::Separator();
-
+	
 	// Target Properties
 	static int goal_position[2] = {
 		static_cast<int>(m_pTarget->GetGridPosition().x),
@@ -250,11 +250,11 @@ void PlayScene::GUI_Function()
 		}
 
 		// convert grid space to world space when snapping the object
-		m_getTile(m_pTarget->GetGridPosition())->SetTileStatus(UNVISITED); // set the tile we left to unvisited
+		m_getTile(m_pTarget->GetGridPosition())->SetTileStatus(TileStatus::UNVISITED); // set the tile we left to unvisited
 		m_pTarget->GetTransform()->position =
 			m_getTile(goal_position[0], goal_position[1])->GetTransform()->position + offset;
 		m_pTarget->SetGridPosition(goal_position[0], goal_position[1]);
-		m_getTile(m_pTarget->GetGridPosition())->SetTileStatus(GOAL);
+		m_getTile(m_pTarget->GetGridPosition())->SetTileStatus(TileStatus::GOAL);
 	}
 
 	ImGui::Separator();

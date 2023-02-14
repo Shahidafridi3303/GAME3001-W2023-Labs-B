@@ -32,7 +32,7 @@
       <UniqueIdentifier>{a44d29c3-2835-4901-a310-0039121b84b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Navigation">
-      <UniqueIdentifier>{2bd481c7-3247-49a9-a07a-e620ccfee2bb}</UniqueIdentifier>
+      <UniqueIdentifier>{169200d8-74ff-4d41-9774-97b94a2c7916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -302,14 +302,17 @@
     <ClInclude Include="..\src\StarShip.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Tile.h">
+      <Filter>Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Heuristic.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\NeighbourTile.h">
       <Filter>Enums</Filter>
     </ClInclude>
     <ClInclude Include="..\src\TileStatus.h">
       <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Tile.h">
-      <Filter>Navigation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
