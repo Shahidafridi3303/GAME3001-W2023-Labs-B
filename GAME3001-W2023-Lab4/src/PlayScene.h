@@ -46,6 +46,9 @@ private:
 	// obstacle array
 	Obstacle* m_pObstacles[25];
 
+	template <typename T>
+	T* m_addNavigationObjectToGrid(T* object, int col, int row, TileStatus status);
+
 	// convenience functions to convert from world space to grid space
 	Tile* m_getTile(int col, int row) const;
 	Tile* m_getTile(glm::vec2 grid_position) const;
