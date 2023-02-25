@@ -65,37 +65,6 @@ T* PlayScene::m_addNavigationObjectToGrid(T* object, const int col, const int ro
 	return object;
 }
 
-void PlayScene::m_markImpassable()
-{
-	m_addNavigationObjectToGrid(m_pObstacleList[0], 9, 0, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[1], 9, 1, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[2], 9, 2, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[3], 9, 3, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[4], 9, 4, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[5], 9, 5, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[6], 9, 6, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[7], 9, 7, TileStatus::IMPASSABLE);
-
-	m_addNavigationObjectToGrid(m_pObstacleList[8], 5, 6, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[9], 5, 7, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[10], 5, 8, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[11], 5, 9, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[12], 5, 10, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[13], 5, 11, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[14], 5, 12, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[15], 5, 13, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[16], 5, 14, TileStatus::IMPASSABLE);
-
-	m_addNavigationObjectToGrid(m_pObstacleList[17], 13, 7, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[18], 13, 8, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[19], 13, 9, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[20], 13, 10, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[21], 13, 11, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[22], 13, 12, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[23], 13, 13, TileStatus::IMPASSABLE);
-	m_addNavigationObjectToGrid(m_pObstacleList[24], 13, 14, TileStatus::IMPASSABLE);
-}
-
 void PlayScene::Start()
 {
 	// Set GUI Title
@@ -322,6 +291,14 @@ void PlayScene::m_computeTileCosts()
 		}
 
 		tile->SetTileCost(distance);
+	}
+}
+
+void PlayScene::m_buildObstacles()
+{
+	for (int i = 0; i < 300; ++i)
+	{
+		m_pObstacles.push_back(new Obstacle());
 	}
 }
 
