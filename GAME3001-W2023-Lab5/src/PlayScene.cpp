@@ -54,15 +54,35 @@ void PlayScene::HandleEvents()
 }
 
 template <typename T>
-T* PlayScene::m_addNavigationObjectToGrid(T* object, const int col, const int row, const TileStatus status)
+void PlayScene::m_addObjectToGrid(T*& object, const int col, const int row, const TileStatus status)
 {
-	const auto offset = glm::vec2(Config::TILE_SIZE * 0.5f, Config::TILE_SIZE * 0.5f);
-	object = new T();
+	constexpr auto offset = glm::vec2(Config::TILE_SIZE * 0.5f, Config::TILE_SIZE * 0.5f);
+	// Add the type Object to the Scene
+	object = new T(); // Instantiate an object of type T
 	object->GetTransform()->position = m_getTile(col, row)->GetTransform()->position + offset;
-	object->SetGridPosition(static_cast<float>(col), static_cast<float>(row));
+	object->SetGridPosition(static_cast<float>(col), static_cast<float>(row)); // Record grid space position
 	m_getTile(col, row)->SetTileStatus(status);
 	AddChild(object);
-	return object;
+}
+
+template <typename T>
+void PlayScene::m_moveGameObject(T*& object, const int col, const int row, const TileStatus status)
+{
+	constexpr auto offset = glm::vec2(Config::TILE_SIZE * 0.5f, Config::TILE_SIZE * 0.5f);
+
+	// only change status of Tile object is moving from if it is not an impassable tile
+	if(m_getTile(object->GetGridPosition())->GetTileStatus() != TileStatus::IMPASSABLE)
+	{
+		m_getTile(object->GetGridPosition())->SetTileStatus(TileStatus::UNVISITED);
+	}
+	object->GetTransform()->position = m_getTile(col, row)->GetTransform()->position + offset;
+	object->SetGridPosition(static_cast<float>(col), static_cast<float>(row));
+
+	// only change status of Tile object is moving to if it is not an impassable tile
+	if (m_getTile(object->GetGridPosition())->GetTileStatus() != TileStatus::IMPASSABLE)
+	{
+		m_getTile(object->GetGridPosition())->SetTileStatus(status);
+	}
 }
 
 void PlayScene::Start()
@@ -75,12 +95,10 @@ void PlayScene::Start()
 	m_currentHeuristic = Heuristic::MANHATTAN;
 
 	// Add the Target to the Scene
-	m_pTarget = m_addNavigationObjectToGrid(m_pTarget, 15, 11, TileStatus::GOAL);
+	m_addObjectToGrid(m_pTarget, 15, 11, TileStatus::GOAL);
 
 	// Add the StarShip to the Scene
-	m_pStarShip = m_addNavigationObjectToGrid(m_pStarShip, 1, 3, TileStatus::START);
-
-	m_markImpassable();
+	m_addObjectToGrid(m_pStarShip, 1, 3, TileStatus::START);
 
 	// Preload Sounds
 
@@ -102,7 +120,7 @@ void PlayScene::GUI_Function()
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("GAME3001 - W2023 - Lab4", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
+	ImGui::Begin("GAME3001 - W2023 - Lab5", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
 	ImGui::Separator();
 
@@ -142,13 +160,7 @@ void PlayScene::GUI_Function()
 		{
 			start_position[1] = Config::ROW_NUM - 1;
 		}
-
-		// convert grid space to world space
-		m_getTile(m_pStarShip->GetGridPosition())->SetTileStatus(TileStatus::UNVISITED);
-		m_pStarShip->GetTransform()->position = 
-			m_getTile(start_position[0], start_position[1])->GetTransform()->position + offset;
-		m_pStarShip->SetGridPosition(start_position[0], start_position[1]);
-		m_getTile(m_pStarShip->GetGridPosition())->SetTileStatus(TileStatus::START);
+		m_moveGameObject(m_pStarShip, start_position[0], start_position[1], TileStatus::START);
 	}
 
 	ImGui::Separator();
@@ -165,12 +177,7 @@ void PlayScene::GUI_Function()
 			goal_position[1] = Config::ROW_NUM - 1;
 		}
 
-		// convert grid space to world space
-		m_getTile(m_pTarget->GetGridPosition())->SetTileStatus(TileStatus::UNVISITED);
-		m_pTarget->GetTransform()->position =
-			m_getTile(goal_position[0], goal_position[1])->GetTransform()->position + offset;
-		m_pTarget->SetGridPosition(goal_position[0], goal_position[1]);
-		m_getTile(m_pTarget->GetGridPosition())->SetTileStatus(TileStatus::GOAL);
+		m_moveGameObject(m_pTarget, goal_position[0], start_position[1], TileStatus::GOAL);
 		m_computeTileCosts();
 	}
 
@@ -300,6 +307,35 @@ void PlayScene::m_buildObstacles()
 	{
 		m_pObstacles.push_back(new Obstacle());
 	}
+}
+
+void PlayScene::m_removeObstacleAt(const int col, const int row)
+{
+	for (const auto& obstacle : m_pObstacles)
+	{
+		if(obstacle != nullptr)
+		{
+			if (static_cast<int>(obstacle->GetGridPosition().x) == col && static_cast<int>(obstacle->GetGridPosition().y) == row)
+			{
+				RemoveChild(obstacle);
+				m_pObstacles[(row * Config::COL_NUM) + col] = new Obstacle();
+			}
+		}
+	}
+}
+
+void PlayScene::m_removeObstacleAt(const glm::vec2 grid_position)
+{
+	m_removeObstacleAt(static_cast<int>(grid_position.x), static_cast<int>(grid_position.y));
+}
+
+void PlayScene::m_removeAllObstacles()
+{
+	for (auto& obstacle : m_pObstacles)
+	{
+		RemoveChild(obstacle);
+	}
+	m_pObstacles.clear();
 }
 
 void PlayScene::m_findShortestPath()
