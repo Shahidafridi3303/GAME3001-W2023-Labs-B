@@ -3,7 +3,7 @@
 #include "EventManager.h"
 #include <Windows.h>
 
-// required for IMGUI
+// required for IMGUI function
 #include "imgui.h"
 #include "imgui_sdl.h"
 #include "Renderer.h"
@@ -530,7 +530,7 @@ void PlayScene::m_resetPathFinding()
 	{
 		if (tile->GetTileStatus() == TileStatus::OPEN
 			|| tile->GetTileStatus() == TileStatus::CLOSED
-			|| tile->GetTileStatus() == TileStatus::PATH);
+			|| tile->GetTileStatus() == TileStatus::PATH)
 		{
 			tile->SetTileStatus(TileStatus::UNVISITED);
 		}
