@@ -60,11 +60,27 @@ void PlayScene::Start()
 	m_guiTitle = "Play Scene";
 
 	// Game Objects
-	m_pStarShip = new StarShip;
+	m_pStarShip = new StarShip();
+	m_pStarShip->GetTransform()->position = glm::vec2(150.0f, 300.0f);
 	AddChild(m_pStarShip);
 
-	m_pTarget = new Target;
+	m_pTarget = new Target();
+	m_pTarget->GetTransform()->position = glm::vec2(600.0f, 300.0f);
 	AddChild(m_pTarget);
+
+	// Add Obstacles
+	BuildObstaclePool();
+
+	m_pObstacles[0]->GetTransform()->position = glm::vec2(380.0f, 80.0f);
+	m_pObstacles[0]->SetHeight(50);
+	AddChild(m_pObstacles[0]);
+
+	m_pObstacles[1]->GetTransform()->position = glm::vec2(380.0f, 280.0f);
+	m_pObstacles[1]->SetWidth(100);
+	AddChild(m_pObstacles[1]);
+
+	m_pObstacles[2]->GetTransform()->position = glm::vec2(380.0f, 480.0f);
+	AddChild(m_pObstacles[2]);
 
 	// Preload Sounds
 
@@ -82,7 +98,7 @@ void PlayScene::GUI_Function()
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("GAME3001 - W2023 - Lab5", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
+	ImGui::Begin("GAME3001 - W2023 - Lab6.1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
 	ImGui::Separator();
 
@@ -100,8 +116,8 @@ void PlayScene::GUI_Function()
 		static_cast<int>(m_pStarShip->GetTransform()->position.y) };
 
 	static int goal_position[] = {
-		static_cast<int>(m_pTarget->GetGridPosition().x),
-		static_cast<int>(m_pTarget->GetGridPosition().y) };
+		static_cast<int>(m_pTarget->GetTransform()->position.x),
+		static_cast<int>(m_pTarget->GetTransform()->position.y) };
 
 
 	ImGui::Separator();
@@ -109,8 +125,8 @@ void PlayScene::GUI_Function()
 	// StarShip Properties
 	if(ImGui::SliderInt2("StarShip Position", start_position, 0, 800))
 	{
-		m_pStarShip->GetTransform()->position.x = start_position[0];
-		m_pStarShip->GetTransform()->position.y = start_position[1];
+		m_pStarShip->GetTransform()->position.x = static_cast<float>(start_position[0]);
+		m_pStarShip->GetTransform()->position.y = static_cast<float>(start_position[1]);
 	}
 
 	ImGui::Separator();
@@ -118,8 +134,8 @@ void PlayScene::GUI_Function()
 	// Target Properties
 	if (ImGui::SliderInt2("Target Position", goal_position, 0, 800))
 	{
-		m_pTarget->GetTransform()->position.x = goal_position[0];
-		m_pTarget->GetTransform()->position.y = goal_position[1];
+		m_pTarget->GetTransform()->position.x = static_cast<float>(goal_position[0]);
+		m_pTarget->GetTransform()->position.y = static_cast<float>(goal_position[1]);
 	}
 
 	ImGui::End();
@@ -127,7 +143,8 @@ void PlayScene::GUI_Function()
 
 void PlayScene::m_buildGrid()
 {
-	const auto tile_size = Config::TILE_SIZE;
+	const auto tile_size = Config::TILE_SIZE; // Tile Size alias
+	//auto offset = glm::vec2(config::TILE_SIZE * 0.5, Co)
 
 	// layout a grid of tiles
 	for (int row = 0; row < Config::ROW_NUM; ++row)
@@ -139,9 +156,21 @@ void PlayScene::m_buildGrid()
 	}
 }
 
-void PlayScene::m_buildObstacles()
+void PlayScene::m_toggleGrid(bool state) const
 {
-	for (int i = 0; i < 300; ++i)
+}
+
+void PlayScene::m_clearNodes()
+{
+}
+
+void PlayScene::m_checkShipLOS(DisplayObject* target_object) const
+{
+}
+
+void PlayScene::BuildObstaclePool()
+{
+	for (int i = 0; i < 3; ++i)
 	{
 		m_pObstacles.push_back(new Obstacle());
 	}
