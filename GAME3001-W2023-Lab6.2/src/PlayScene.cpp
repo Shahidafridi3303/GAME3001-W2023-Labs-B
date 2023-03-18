@@ -69,26 +69,15 @@ void PlayScene::Start()
 
 	// Add Game Objects
 	m_pTarget = new Target();
-	m_pTarget->GetTransform()->position = glm::vec2(600.0f, 300.0f);
-	AddChild(m_pTarget);
+	m_pTarget->GetTransform()->position = glm::vec2(550.0f, 300.0f);
+	AddChild(m_pTarget, 2);
 
 	m_pStarShip = new StarShip();
 	m_pStarShip->GetTransform()->position = glm::vec2(150.0f, 300.0f);
-	AddChild(m_pStarShip);
+	AddChild(m_pStarShip, 2);
 
 	// Add Obstacles
 	BuildObstaclePool();
-
-	m_pObstacles[0]->GetTransform()->position = glm::vec2(380.0f, 80.0f);
-	m_pObstacles[0]->SetHeight(50);
-	AddChild(m_pObstacles[0]);
-
-	m_pObstacles[1]->GetTransform()->position = glm::vec2(380.0f, 280.0f);
-	m_pObstacles[1]->SetWidth(100);
-	AddChild(m_pObstacles[1]);
-
-	m_pObstacles[2]->GetTransform()->position = glm::vec2(380.0f, 480.0f);
-	AddChild(m_pObstacles[2]);
 
 	// Setup the Grid
 	m_isGridEnabled = false;
