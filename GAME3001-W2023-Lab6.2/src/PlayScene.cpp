@@ -22,11 +22,14 @@ void PlayScene::Draw()
 {
 	DrawDisplayList();
 
-	/*for (const auto obstacle : m_pObstacles)
+	if(m_isGridEnabled)
 	{
-		Util::DrawRect(obstacle->GetTransform()->position - glm::vec2(obstacle->GetWidth() * 0.5f,
-			obstacle->GetHeight() * 0.5f), obstacle->GetWidth(), obstacle->GetHeight());
-	}*/
+		for (const auto obstacle : m_pObstacles)
+		{
+			Util::DrawRect(obstacle->GetTransform()->position - glm::vec2(obstacle->GetWidth() * 0.5f,
+				obstacle->GetHeight() * 0.5f), obstacle->GetWidth(), obstacle->GetHeight());
+		}
+	}
 
 	SDL_SetRenderDrawColor(Renderer::Instance().GetRenderer(), 255, 255, 255, 255);
 }
@@ -35,6 +38,18 @@ void PlayScene::Update()
 {
 	UpdateDisplayList();
 	m_checkAgentLOS(m_pStarShip, m_pTarget);
+	switch(m_LOSMode)
+	{
+	case LOSMode::TARGET:
+		m_checkAllNodesWithTarget(m_pTarget);
+		break;
+	case LOSMode::SHIP:
+		m_checkAllNodesWithTarget(m_pStarShip);
+		break;
+	case LOSMode::BOTH:
+		m_checkAllNodesWithBoth();
+		break;
+	}
 }
 
 void PlayScene::Clean()
@@ -66,6 +81,11 @@ void PlayScene::Start()
 {
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
+
+	// Setup a few more fields
+	m_LOSMode = LOSMode::TARGET;
+	m_pathNodeLOSDistance = 1000; // 1000px distance
+	m_setPathNodeLOSDistance(m_pathNodeLOSDistance);
 
 	// Add Game Objects
 	m_pTarget = new Target();
@@ -100,7 +120,7 @@ void PlayScene::GUI_Function()
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("GAME3001 - W2023 - Lab 6.1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
+	ImGui::Begin("GAME3001 - W2023 - Lab 6.2", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar );
 
 	ImGui::Separator();
 
@@ -108,6 +128,23 @@ void PlayScene::GUI_Function()
 	if(ImGui::Checkbox("Toggle Grid", &m_isGridEnabled))
 	{
 		m_toggleGrid(m_isGridEnabled);
+	}
+
+	ImGui::Separator();
+
+	static int LOS_mode = static_cast<int>(m_LOSMode);
+	ImGui::Text("Path Node LOS");
+	ImGui::RadioButton("Target", &LOS_mode, static_cast<int>(LOSMode::TARGET)); ImGui::SameLine();
+	ImGui::RadioButton("StarShip", &LOS_mode, static_cast<int>(LOSMode::SHIP)); ImGui::SameLine();
+	ImGui::RadioButton("Both Target & StarShip", &LOS_mode, static_cast<int>(LOSMode::BOTH));
+
+	m_LOSMode = static_cast<LOSMode>(LOS_mode);
+
+	ImGui::Separator();
+
+	if(ImGui::SliderInt("Path Node LOS Distance", &m_pathNodeLOSDistance, 0, 1000))
+	{
+		m_setPathNodeLOSDistance(m_pathNodeLOSDistance);
 	}
 
 	ImGui::Separator();
@@ -146,7 +183,7 @@ void PlayScene::GUI_Function()
 	{
 		int obstaclePosition[] = { static_cast<int>(m_pObstacles[i]->GetTransform()->position.x),
 		static_cast<int>(m_pObstacles[i]->GetTransform()->position.y) };
-		std::string label = "Obstacle" + std::to_string(i + 1) + " Position";
+		std::string label = "Obstacle " + std::to_string(i + 1) + " Position";
 		if(ImGui::SliderInt2(label.c_str(), obstaclePosition, 0, 800))
 		{
 			m_pObstacles[i]->GetTransform()->position.x = static_cast<float>(obstaclePosition[0]);
