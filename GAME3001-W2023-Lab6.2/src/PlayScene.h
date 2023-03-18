@@ -45,7 +45,7 @@ private:
 	// LOS functions
 	bool m_checkAgentLOS(Agent* agent, DisplayObject* target_object) const;
 	bool m_checkPathNodeLOS(PathNode* path_node, DisplayObject* target_object) const;
-	void m_checkAllNodesWithTarget(DisplayObject* target_object);
+	void m_checkAllNodesWithTarget(DisplayObject* target_object) const;
 	void m_checkAllNodesWithBoth();
 	void m_setPathNodeLOSDistance(int distance);
 
