@@ -45,7 +45,7 @@ private:
 	// LOS functions
 	void m_checkShipLOS(DisplayObject* target_object) const;
 
-	bool m_checkAgentLOS(Agent* agent, DisplayObject* target_object);
+	bool m_checkAgentLOS(Agent* agent, DisplayObject* target_object) const;
 	bool m_checkPathNodesLOS(PathNode* path_node, DisplayObject* target_object);
 	void m_checkAllNodesWithTarget(DisplayObject* target_object);
 	void m_checkAllNodesWithBoth();
