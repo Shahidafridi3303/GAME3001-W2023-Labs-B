@@ -8,6 +8,7 @@
 #include "imgui_sdl.h"
 #include "Renderer.h"
 #include "Util.h"
+#include <fstream>
 
 PlayScene::PlayScene()
 {
@@ -171,10 +172,21 @@ void PlayScene::GUI_Function()
 
 void PlayScene::BuildObstaclePool()
 {
-	for (int i = 0; i < 3; ++i)
+	std::ifstream inFile("../Assets/data/obstacles.txt");
+
+	while(!inFile.eof())
 	{
-		m_pObstacles.push_back(new Obstacle());
-	}
+		std::cout << "Obstacle " << std::endl;
+		auto obstacle = new Obstacle();
+		float x, y, w, h; // declare variables the same as how the file is organized
+		inFile >> x >> y >> w >> h; // read data from file line by line
+		obstacle->GetTransform()->position = glm::vec2(x, y);
+		obstacle->SetWidth(static_cast<int>(w));
+		obstacle->SetHeight(static_cast<int>(h));
+		AddChild(obstacle, 0);
+		m_pObstacles.push_back(obstacle);
+ 	}
+	inFile.close();
 }
 
 void PlayScene::m_buildGrid()
