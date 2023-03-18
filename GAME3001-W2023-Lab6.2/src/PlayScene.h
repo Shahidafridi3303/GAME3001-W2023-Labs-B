@@ -44,6 +44,14 @@ private:
 	// LOS functions
 	void m_checkShipLOS(DisplayObject* target_object) const;
 
+	bool m_checkAgentLOS(Agent* agent, DisplayObject* target_object);
+	bool m_checkPathNodesLOS(PathNode* path_node, DisplayObject* target_object);
+	void m_checkAllNodesWithTarget(DisplayObject* target_object);
+	void m_checkAllNodesWithBoth();
+	void m_setPathNodeLOSDistance(int distance);
+
+	// LOS Variable (fields)
+
 	// Debugging Variables
 	bool m_bDebugView;
 
