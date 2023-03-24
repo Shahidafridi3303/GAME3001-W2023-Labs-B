@@ -19,7 +19,7 @@ public:
 	DecisionTree(Agent* agent);
 
 	// destructor
-	~DecisionTree()
+	~DecisionTree();
 
 	// getters and setters
 	Agent* GetAgent() const;
@@ -36,7 +36,7 @@ public:
 	// Life Cycle Functions
 	void Display() const;
 	void Update() const;
-	void Clean() const;
+	void Clean();
 
 	// Main Public Method
 	void MakeDecision() const; // in-order traversal of the tree
