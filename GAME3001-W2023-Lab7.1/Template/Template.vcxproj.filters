@@ -28,9 +28,6 @@
     <Filter Include="IMGUI">
       <UniqueIdentifier>{c2c3b1d2-add5-45c2-af91-b66dda24fa0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DOCS">
-      <UniqueIdentifier>{a44d29c3-2835-4901-a310-0039121b84b9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Navigation">
       <UniqueIdentifier>{dd0f8848-f6ff-41a0-a27f-16781c70a262}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,9 @@
     </Filter>
     <Filter Include="Decision\Agents">
       <UniqueIdentifier>{e155b123-8a92-4d06-a995-b763b447298c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DOCS">
+      <UniqueIdentifier>{a44d29c3-2835-4901-a310-0039121b84b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +179,15 @@
     </ClCompile>
     <ClCompile Include="..\src\PatrolAction.cpp">
       <Filter>Decision\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CloseCombatCondition.cpp">
+      <Filter>Decision\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LOSCondition.cpp">
+      <Filter>Decision\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RadiusCondition.cpp">
+      <Filter>Decision\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -362,9 +371,6 @@
     <ClInclude Include="..\src\ActionState.h">
       <Filter>Decision\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ConditionNode.h">
-      <Filter>Decision\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\TreeNode.h">
       <Filter>Decision\Core</Filter>
     </ClInclude>
@@ -385,6 +391,18 @@
     </ClInclude>
     <ClInclude Include="..\src\PatrolAction.h">
       <Filter>Decision\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ConditionNode.h">
+      <Filter>Decision\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\CloseCombatCondition.h">
+      <Filter>Decision\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\LOSCondition.h">
+      <Filter>Decision\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\RadiusCondition.h">
+      <Filter>Decision\Conditions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
