@@ -1,7 +1,6 @@
 #pragma once
 #ifndef __TILE__
 #define __TILE__
-
 #include "Label.h"
 #include "NavigationObject.h"
 #include "TileStatus.h"

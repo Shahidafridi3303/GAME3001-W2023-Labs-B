@@ -49,7 +49,7 @@ CloseCombatCondition* DecisionTree::GetCloseCombatNode() const
 
 TreeNode* DecisionTree::AddNode(TreeNode* parent, TreeNode* child_node, const TreeNodeType type)
 {
-	switch(type)
+	switch (type)
 	{
 	case TreeNodeType::LEFT_TREE_NODE:
 		parent->m_pLeft = child_node;
@@ -75,7 +75,7 @@ void DecisionTree::Display() const
 
 void DecisionTree::Update() const
 {
-	
+
 }
 
 void DecisionTree::Clean()
@@ -98,7 +98,7 @@ void DecisionTree::MakeDecision() const
 	TreeNode* current_node = m_treeNodeList[0]; // root node
 
 	// Traverse the tree down through each decision to the fal action
-	while(!current_node->m_isLeaf)
+	while (!current_node->m_isLeaf)
 	{
 		current_node = dynamic_cast<ConditionNode*>(current_node)->Condition() ?
 			(current_node->m_pRight) : (current_node->m_pLeft);
