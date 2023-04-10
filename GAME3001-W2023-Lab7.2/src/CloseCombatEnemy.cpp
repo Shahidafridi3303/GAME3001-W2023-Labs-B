@@ -61,7 +61,7 @@ void CloseCombatEnemy::Draw()
 void CloseCombatEnemy::Update()
 {
 	// Determine which action to perform
-	m_tree->MakeDecision()
+	m_tree->MakeDecision();
 }
 
 void CloseCombatEnemy::Clean()
