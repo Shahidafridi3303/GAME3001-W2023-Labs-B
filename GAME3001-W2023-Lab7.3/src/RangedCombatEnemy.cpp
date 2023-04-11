@@ -1,9 +1,11 @@
 #include "RangedCombatEnemy.h"
-
+#include "WaitBehindCoverAction.h"
 #include "ActionNode.h"
 #include "AttackAction.h"
 #include "EventManager.h"
+#include "FleeAction.h"
 #include "Game.h"
+#include "MoveToCoverAction.h"
 #include "MoveToLOSAction.h"
 #include "MoveToRangeAction.h"
 #include "PatrolAction.h"
@@ -26,7 +28,7 @@ m_turnRate(5.0f), m_accelerationRate(2.0f), m_startPosition(glm::vec2(300.0f, 50
 	setIsCentered(true);
 	SetType(GameObjectType::AGENT);
 
-	
+
 	SetCurrentHeading(0.0f); // Current facing angle
 	SetLOSDistance(400.0f);
 	SetWhiskerAngle(45.0f);
@@ -48,7 +50,7 @@ RangedCombatEnemy::~RangedCombatEnemy()
 void RangedCombatEnemy::Draw()
 {
 	// draw the RangedCombatEnemy
-	TextureManager::Instance().Draw("ranged_combat_enemy", 
+	TextureManager::Instance().Draw("ranged_combat_enemy",
 		GetTransform()->position, static_cast<double>(GetCurrentHeading()), 255, true);
 	if (EventManager::Instance().IsIMGUIActive())
 	{
@@ -112,10 +114,10 @@ void RangedCombatEnemy::Seek()
 	// New for Lab 7.1
 	// Find Next Waypoint if within 10px of the current waypoint
 
-	if(Util::Distance(m_patrolPath[m_wayPoint], GetTransform()->position) < 10)
+	if (Util::Distance(m_patrolPath[m_wayPoint], GetTransform()->position) < 10)
 	{
 		// check to see if you are at the last point in the path
-		if(++m_wayPoint == m_patrolPath.size())
+		if (++m_wayPoint == m_patrolPath.size())
 		{
 			// if so..reset
 			m_wayPoint = 0;
@@ -134,7 +136,7 @@ void RangedCombatEnemy::Seek()
 
 void RangedCombatEnemy::LookWhereYoureGoing(const glm::vec2 target_direction)
 {
-	float target_rotation = Util::SignedAngle(GetCurrentDirection(), target_direction) -90.0f;
+	float target_rotation = Util::SignedAngle(GetCurrentDirection(), target_direction) - 90.0f;
 
 	const float last_rotation = target_rotation;
 
@@ -150,16 +152,16 @@ void RangedCombatEnemy::LookWhereYoureGoing(const glm::vec2 target_direction)
 		target_rotation = last_rotation;
 	}
 
-	if(GetCollisionWhiskers()[0] || GetCollisionWhiskers()[1] || GetCollisionWhiskers()[2])
+	if (GetCollisionWhiskers()[0] || GetCollisionWhiskers()[1] || GetCollisionWhiskers()[2])
 	{
 		target_rotation += GetTurnRate() * turn_sensitivity;
 	}
-	else if(GetCollisionWhiskers()[3] || GetCollisionWhiskers()[4])
+	else if (GetCollisionWhiskers()[3] || GetCollisionWhiskers()[4])
 	{
 		target_rotation -= GetTurnRate() * turn_sensitivity;
 	}
 
-	SetCurrentHeading(Util::LerpUnclamped(GetCurrentHeading(), 
+	SetCurrentHeading(Util::LerpUnclamped(GetCurrentHeading(),
 		GetCurrentHeading() + target_rotation, GetTurnRate() * Game::Instance().GetDeltaTime()));
 
 	UpdateWhiskers(GetWhiskerAngle());
@@ -190,6 +192,56 @@ void RangedCombatEnemy::MoveToRange()
 	// TODO: set up another action to take when moving to range
 }
 
+void RangedCombatEnemy::Flee()
+{
+	if (GetActionState() != ActionState::FLEE)
+	{
+		// initialize the Action
+		SetActionState(ActionState::FLEE);
+	}
+	// TODO: set up another action to take when fleeing
+}
+
+void RangedCombatEnemy::MoveToLOS()
+{
+	if (GetActionState() != ActionState::MOVE_TO_LOS)
+	{
+		// initialize the Action
+		SetActionState(ActionState::MOVE_TO_LOS);
+	}
+	// TODO: set up another action to take when moving to LOS
+}
+
+void RangedCombatEnemy::MoveToCover()
+{
+	if (GetActionState() != ActionState::MOVE_TO_COVER)
+	{
+		// initialize the Action
+		SetActionState(ActionState::MOVE_TO_COVER);
+	}
+	// TODO: set up another action to take when moving to cover
+}
+
+void RangedCombatEnemy::WaitBehindCover()
+{
+	if (GetActionState() != ActionState::WAIT_BEHIND_COVER)
+	{
+		// initialize the Action
+		SetActionState(ActionState::WAIT_BEHIND_COVER);
+	}
+	// TODO: set up another action to take when waiting behind cover
+}
+
+void RangedCombatEnemy::Attack()
+{
+	if (GetActionState() != ActionState::ATTACK)
+	{
+		// initialize the Action
+		SetActionState(ActionState::ATTACK);
+	}
+	// TODO: set up another action to take when Attacking
+}
+
 DecisionTree* RangedCombatEnemy::GetTree() const
 {
 	return m_tree;
@@ -197,42 +249,61 @@ DecisionTree* RangedCombatEnemy::GetTree() const
 
 void RangedCombatEnemy::m_buildTree()
 {
-	// Conditions
+	// Create and Add the Root Node - 0th Level - Health Condition
+	m_tree->SetEnemyHealthNode(new EnemyHealthCondition(this));
+	m_tree->GetTree().push_back(m_tree->GetEnemyHealthNode());
 
-	// Create and Add the Root Node
-	m_tree->SetLOSNode(new LOSCondition());
-	m_tree->GetTree().push_back(m_tree->GetLOSNode());
+	// Left Subtree for Level 1 - Flee Action
+	TreeNode* fleeNode = m_tree->AddNode(m_tree->GetEnemyHealthNode(), new FleeAction(this), TreeNodeType::LEFT_TREE_NODE);
+	m_tree->GetTree().push_back(fleeNode);
 
-	m_tree->SetRadiusNode(new RadiusCondition());
-	m_tree->AddNode(m_tree->GetLOSNode(), m_tree->GetRadiusNode(), TreeNodeType::LEFT_TREE_NODE);
-	m_tree->GetTree().push_back(m_tree->GetRadiusNode());
+	// Right Subtree for Level 1 - Enemy Hit Condition
+	m_tree->SetEnemyHitNode(new EnemyHitCondition(this));
+	m_tree->AddNode(m_tree->GetEnemyHealthNode(), m_tree->GetEnemyHitNode(), TreeNodeType::RIGHT_TREE_NODE);
+	m_tree->GetTree().push_back(m_tree->GetEnemyHitNode());
 
-	m_tree->SetCloseCombatNode(new CloseCombatCondition());
-	m_tree->AddNode(m_tree->GetLOSNode(), m_tree->GetCloseCombatNode(), TreeNodeType::RIGHT_TREE_NODE);
-	m_tree->GetTree().push_back(m_tree->GetCloseCombatNode());
+	// Left Subtree for Level 2 - Player Detected Condition
+	m_tree->SetPlayerDetectedNode(new PlayerDetectedCondition(this));
+	m_tree->AddNode(m_tree->GetEnemyHitNode(), m_tree->GetPlayerDetectedNode(), TreeNodeType::LEFT_TREE_NODE);
+	m_tree->GetTree().push_back(m_tree->GetEnemyHitNode());
 
-	m_tree->SetRangedCombatNode(new RangedCombatCondition());
-	m_tree->AddNode(m_tree->GetLOSNode(), m_tree->GetRangedCombatNode(), TreeNodeType::RIGHT_TREE_NODE);
-	m_tree->GetTree().push_back(m_tree->GetRangedCombatNode());
+	// Right Subtree for Level 2 Right LOS Condition
+	LOSCondition* LOSNodeRight = new LOSCondition(this);
+	m_tree->AddNode(m_tree->GetEnemyHitNode(), LOSNodeRight, TreeNodeType::RIGHT_TREE_NODE);
+	m_tree->GetTree().push_back(LOSNodeRight);
 
-	// Actions
-
-	// Left Sub-Tree
-	TreeNode* patrolNode = m_tree->AddNode(m_tree->GetRadiusNode(), new PatrolAction(), TreeNodeType::LEFT_TREE_NODE);
-	dynamic_cast<ActionNode*>(patrolNode)->SetAgent(this);
+	// Left Left Subtree of Level 3 - Patrol Action
+	TreeNode* patrolNode = m_tree->AddNode(m_tree->GetPlayerDetectedNode(), new PatrolAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(patrolNode);
 
-	TreeNode* moveToLOSNode = m_tree->AddNode(m_tree->GetRadiusNode(), new MoveToLOSAction(), TreeNodeType::RIGHT_TREE_NODE);
-	dynamic_cast<ActionNode*>(moveToLOSNode)->SetAgent(this);
+	// Left Right Subtree of Level 3 - Left LOS Condition
+	LOSCondition* LOSNodeLeft = new LOSCondition(this);
+	m_tree->AddNode(m_tree->GetPlayerDetectedNode(), LOSNodeLeft, TreeNodeType::RIGHT_TREE_NODE);
+	m_tree->GetTree().push_back(LOSNodeLeft);
+
+	// Right Left Subtree of Level 3 - Wait Behind Cover Action
+	TreeNode* waitBehindCoverNode = m_tree->AddNode(LOSNodeRight, new WaitBehindCoverAction(this), TreeNodeType::LEFT_TREE_NODE);
+	m_tree->GetTree().push_back(waitBehindCoverNode);
+
+	// Right Right Subtree of Level 3 - Move to Cover Action
+	TreeNode* moveToCoverNode = m_tree->AddNode(LOSNodeRight, new MoveToCoverAction(this), TreeNodeType::RIGHT_TREE_NODE);
+	m_tree->GetTree().push_back(moveToCoverNode);
+
+	// Left Subtree of Level 4 - Move to LOS Action
+	TreeNode* moveToLOSNode = m_tree->AddNode(LOSNodeLeft, new MoveToLOSAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(moveToLOSNode);
 
-	// Right Sub-Tree
-	TreeNode* moveToRangeNode = m_tree->AddNode(m_tree->GetRangedCombatNode(), new MoveToRangeAction(), TreeNodeType::LEFT_TREE_NODE);
-	dynamic_cast<ActionNode*>(moveToRangeNode)->SetAgent(this);
+	// Right Subtree of Level 4 - Ranged Combat Condition
+	m_tree->SetRangedCombatNode(new RangedCombatCondition(this));
+	m_tree->AddNode(LOSNodeLeft, m_tree->GetRangedCombatNode(), TreeNodeType::RIGHT_TREE_NODE);
+	m_tree->GetTree().push_back(m_tree->GetRangedCombatNode());
+
+	// Left Subtree of Level 5 - Move to Range Action
+	TreeNode* moveToRangeNode = m_tree->AddNode(m_tree->GetRangedCombatNode(), new MoveToRangeAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(moveToRangeNode);
 
-	TreeNode* attackNode = m_tree->AddNode(m_tree->GetRangedCombatNode(), new AttackAction(), TreeNodeType::RIGHT_TREE_NODE);
-	dynamic_cast<ActionNode*>(attackNode)->SetAgent(this);
+	// Right Subtree of Level 5 - Attack Action
+	TreeNode* attackNode = m_tree->AddNode(m_tree->GetRangedCombatNode(), new AttackAction(this), TreeNodeType::RIGHT_TREE_NODE);
 	m_tree->GetTree().push_back(attackNode);
 }
 
