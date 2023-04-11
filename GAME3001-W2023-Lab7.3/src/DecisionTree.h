@@ -6,10 +6,13 @@
 #include "CloseCombatCondition.h"
 #include "LOSCondition.h"
 #include "RadiusCondition.h"
-#include "TreeNode.h"
-#include "TreeNodeType.h"
 #include "RangedCombatCondition.h"
-#include <vector>
+#include "TreeNode.h"
+#include "TreeNodeType.h"  //#include <vector>
+
+#include "EnemyHealthCondition.h"
+#include "EnemyHitCondition.h"
+#include "PlayerDetectedCondition.h"
 
 class DecisionTree
 {
