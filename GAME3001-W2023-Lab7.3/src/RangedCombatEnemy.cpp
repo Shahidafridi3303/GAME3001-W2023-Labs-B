@@ -259,7 +259,8 @@ void RangedCombatEnemy::m_buildTree()
 
 	// Right Subtree for Level 1 - Enemy Hit Condition
 	m_tree->SetEnemyHitNode(new EnemyHitCondition(this));
-	m_tree->AddNode(m_tree->GetEnemyHealthNode(), m_tree->GetEnemyHitNode(), TreeNodeType::RIGHT_TREE_NODE);
+	m_tree->AddNode(m_tree->GetEnemyHealthNode(), m_tree->GetEnemyHitNode(),
+		TreeNodeType::RIGHT_TREE_NODE);
 	m_tree->GetTree().push_back(m_tree->GetEnemyHitNode());
 
 	// Left Subtree for Level 2 - Player Detected Condition
@@ -273,7 +274,8 @@ void RangedCombatEnemy::m_buildTree()
 	m_tree->GetTree().push_back(LOSNodeRight);
 
 	// Left Left Subtree of Level 3 - Patrol Action
-	TreeNode* patrolNode = m_tree->AddNode(m_tree->GetPlayerDetectedNode(), new PatrolAction(this), TreeNodeType::LEFT_TREE_NODE);
+	TreeNode* patrolNode = m_tree->AddNode(m_tree->GetPlayerDetectedNode(), 
+		new PatrolAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(patrolNode);
 
 	// Left Right Subtree of Level 3 - Left LOS Condition
@@ -282,15 +284,18 @@ void RangedCombatEnemy::m_buildTree()
 	m_tree->GetTree().push_back(LOSNodeLeft);
 
 	// Right Left Subtree of Level 3 - Wait Behind Cover Action
-	TreeNode* waitBehindCoverNode = m_tree->AddNode(LOSNodeRight, new WaitBehindCoverAction(this), TreeNodeType::LEFT_TREE_NODE);
+	TreeNode* waitBehindCoverNode = m_tree->AddNode(LOSNodeRight, 
+		new WaitBehindCoverAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(waitBehindCoverNode);
 
 	// Right Right Subtree of Level 3 - Move to Cover Action
-	TreeNode* moveToCoverNode = m_tree->AddNode(LOSNodeRight, new MoveToCoverAction(this), TreeNodeType::RIGHT_TREE_NODE);
+	TreeNode* moveToCoverNode = m_tree->AddNode(LOSNodeRight,
+		new MoveToCoverAction(this), TreeNodeType::RIGHT_TREE_NODE);
 	m_tree->GetTree().push_back(moveToCoverNode);
 
 	// Left Subtree of Level 4 - Move to LOS Action
-	TreeNode* moveToLOSNode = m_tree->AddNode(LOSNodeLeft, new MoveToLOSAction(this), TreeNodeType::LEFT_TREE_NODE);
+	TreeNode* moveToLOSNode = m_tree->AddNode(LOSNodeLeft,
+		new MoveToLOSAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(moveToLOSNode);
 
 	// Right Subtree of Level 4 - Ranged Combat Condition
@@ -299,11 +304,13 @@ void RangedCombatEnemy::m_buildTree()
 	m_tree->GetTree().push_back(m_tree->GetRangedCombatNode());
 
 	// Left Subtree of Level 5 - Move to Range Action
-	TreeNode* moveToRangeNode = m_tree->AddNode(m_tree->GetRangedCombatNode(), new MoveToRangeAction(this), TreeNodeType::LEFT_TREE_NODE);
+	TreeNode* moveToRangeNode = m_tree->AddNode(m_tree->GetRangedCombatNode(),
+		new MoveToRangeAction(this), TreeNodeType::LEFT_TREE_NODE);
 	m_tree->GetTree().push_back(moveToRangeNode);
 
 	// Right Subtree of Level 5 - Attack Action
-	TreeNode* attackNode = m_tree->AddNode(m_tree->GetRangedCombatNode(), new AttackAction(this), TreeNodeType::RIGHT_TREE_NODE);
+	TreeNode* attackNode = m_tree->AddNode(m_tree->GetRangedCombatNode(),
+		new AttackAction(this), TreeNodeType::RIGHT_TREE_NODE);
 	m_tree->GetTree().push_back(attackNode);
 }
 

@@ -24,11 +24,16 @@ void PlayScene::Draw()
 
 	if(m_isGridEnabled)
 	{
+		// Draws Collision bounds for each obstacle
 		for (const auto obstacle : m_pObstacles)
 		{
 			Util::DrawRect(obstacle->GetTransform()->position - glm::vec2(obstacle->GetWidth() * 0.5f,
 				obstacle->GetHeight() * 0.5f), obstacle->GetWidth(), obstacle->GetHeight());
 		}
+		// new for Lab 7.3 - Draw Detection radius
+		const auto detected = m_pStarShip->GetTree()->GetPlayerDetectedNode()->GetDetected();
+		Util::DrawCircle(m_pStarShip->GetTransform()->position, 300.0f,
+			detected ? glm::vec4(0, 1, 0, 1) : glm::vec4(1, 0, 0, 1));
 	}
 
 	SDL_SetRenderDrawColor(Renderer::Instance().GetRenderer(), 255, 255, 255, 255);
@@ -38,7 +43,20 @@ void PlayScene::Update()
 {
 	UpdateDisplayList();
 
-	m_pStarShip->GetTree()->GetLOSNode()->SetLOS(m_pStarShip->CheckAgentLOSToTarget(m_pTarget, m_pObstacles));
+	// set up Ranged Combat Enemy
+	m_pStarShip->GetTree()->GetEnemyHealthNode()->SetHealth(m_pStarShip->GetHealth() > 25);
+	m_pStarShip->GetTree()->GetEnemyHitNode()->SetIsHit(false);
+	m_pStarShip->CheckAgentLOSToTarget(m_pTarget, m_pObstacles);
+
+	// Distance Chack between the StarShip and the Target for Detection Radius
+	const float distance = Util::Distance(m_pStarShip->GetTransform()->position, m_pTarget->GetTransform()->position);
+
+	// Radius Detection...just outside of LOS Range (around 300px)
+	m_pStarShip->GetTree()->GetPlayerDetectedNode()->SetDetected(distance < 300);
+
+	// within LOS Distance ...but not too cloase (Optimum firing range)
+	m_pStarShip->GetTree()->GetRangedCombatNode()->SetIsWithinCombatRange(distance >= 200 && distance <= 350);
+
 	switch(m_LOSMode)
 	{
 	case LOSMode::TARGET:
@@ -81,7 +99,7 @@ void PlayScene::HandleEvents()
 void PlayScene::Start()
 {
 	// Set GUI Title
-	m_guiTitle = "Lab 7 - Part 2";
+	m_guiTitle = "Lab 7 - Part 3";
 
 	// Setup a few more fields
 	m_LOSMode = LOSMode::TARGET;
