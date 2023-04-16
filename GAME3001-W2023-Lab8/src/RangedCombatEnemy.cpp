@@ -12,8 +12,9 @@
 #include "TextureManager.h"
 #include "Util.h"
 
-RangedCombatEnemy::RangedCombatEnemy() : m_maxSpeed(20.0f),
-m_turnRate(5.0f), m_accelerationRate(2.0f), m_startPosition(glm::vec2(300.0f, 500.0f))
+RangedCombatEnemy::RangedCombatEnemy(Scene* scene)
+: m_maxSpeed(20.0f), m_turnRate(5.0f), m_accelerationRate(2.0f), m_startPosition(glm::vec2(300.0f, 500.0f)),
+m_fireCounter(0), m_fireCounterMax(60), m_pScene(scene)
 {
 	TextureManager::Instance().Load("../Assets/textures/reliant_small.png", "ranged_combat_enemy");
 
@@ -234,12 +235,25 @@ void RangedCombatEnemy::WaitBehindCover()
 
 void RangedCombatEnemy::Attack()
 {
+	auto scene = dynamic_cast<PlayScene*>(m_pScene); // alies for play Scene
+
 	if (GetActionState() != ActionState::ATTACK)
 	{
 		// initialize the Action
 		SetActionState(ActionState::ATTACK);
 	}
-	// TODO: set up another action to take when Attacking
+	//attack acation algorithm
+
+	// new for lab 8
+	// need to get the target object for the play scene
+	glm::vec2 target_direction = Util::Normalize(scene->GetTarget()->GetTransform()->position - GetTransform()->position);
+	LookWhereYoureGoing(target_direction);
+
+	// wait for number of frames before firing again = frame delay
+	if (m_fireCounter++ % m_fireCounterMax == 0)
+	{
+		scene->SpawnEnemyTorpedo();
+	}
 }
 
 DecisionTree* RangedCombatEnemy::GetTree() const

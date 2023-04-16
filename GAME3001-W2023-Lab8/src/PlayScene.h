@@ -12,6 +12,8 @@
 
 // New for Lab 7.1
 #include "Background.h"
+#include "Torpedo.h"
+#include "TorpedoK.h"
 
 class PlayScene : public Scene
 {
@@ -25,6 +27,10 @@ public:
 	virtual void Clean() override;
 	virtual void HandleEvents() override;
 	virtual void Start() override;
+
+	// New for lab 8
+	void SpawnEnemyTorpedo();
+	[[nodiscard]] Target* GetTarget() const;
 private:
 	// IMGUI Function
 	void GUI_Function();
@@ -64,6 +70,11 @@ private:
 
 	// Debugging Variables
 	bool m_bDebugView;
+
+	// New for lab 8
+	std::vector<Torpedo* >m_pTorpedoes;
+	std::vector<TorpedoK* >m_pTorpedoesK;
+
 };
 
 #endif /* defined (__PLAY_SCENE__) */
