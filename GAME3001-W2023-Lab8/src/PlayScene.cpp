@@ -69,6 +69,12 @@ void PlayScene::Update()
 		m_checkAllNodesWithBoth();
 		break;
 	}
+
+	//collision check between TorpedoK and target
+	for (const auto torpedo : m_pTorpedoesK)
+	{
+		CollisionManager::CircleAABBCheck(torpedo, m_pTarget);
+	}
 }
 
 void PlayScene::Clean()
@@ -99,7 +105,7 @@ void PlayScene::HandleEvents()
 void PlayScene::Start()
 {
 	// Set GUI Title
-	m_guiTitle = "Lab 7 - Part 3";
+	m_guiTitle = "Lab 8";
 
 	// Setup a few more fields
 	m_LOSMode = LOSMode::TARGET;
@@ -131,6 +137,8 @@ void PlayScene::Start()
 
 	SoundManager::Instance().Load("../Assets/Audio/yay.ogg", "yay", SoundType::SOUND_SFX);
 	SoundManager::Instance().Load("../Assets/Audio/thunder.ogg", "thunder", SoundType::SOUND_SFX);
+	SoundManager::Instance().Load("../Assets/Audio/torpedo.ogg", "torpedo", SoundType::SOUND_SFX);
+	SoundManager::Instance().Load("../Assets/Audio/torpedo_k.ogg", "torpedo_k", SoundType::SOUND_SFX);
 
 	// Preload Music
 	SoundManager::Instance().Load("../Assets/Audio/Klingon.mp3", "klingon", SoundType::SOUND_MUSIC);
@@ -161,6 +169,7 @@ void PlayScene::SpawnEnemyTorpedo()
 
 Target* PlayScene::GetTarget() const
 {
+	return m_pTarget;
 }
 
 void PlayScene::GUI_Function()
