@@ -1,15 +1,15 @@
 #include "TorpedoK.h"
 #include "TextureManager.h"
 
-TorpedoK::TorpedoK(const float speed, glm::vec2 direction): m_currentAnimationState(TorpedoAnimationState::FIRED), m_speed()
+TorpedoK::TorpedoK(const float speed, glm::vec2 direction) : m_currentAnimationState(TorpedoAnimationState::FIRED), m_speed()
 {
 	TextureManager::Instance().LoadSpriteSheet(
 		"../Assets/sprites/torpedo.txt",
-		"../Assets/sprites/torpedo_k.png", 
-		"torpedoKsheet");
+		"../Assets/sprites/torpedo_k.png",
+		"torpedosheet");
 
-	SetSpriteSheet(TextureManager::Instance().GetSpriteSheet("torpedoKsheet"));
-	
+	SetSpriteSheet(TextureManager::Instance().GetSpriteSheet("torpedosheet"));
+
 	// set frame width
 	SetWidth(64);
 
@@ -33,10 +33,10 @@ TorpedoK::~TorpedoK()
 void TorpedoK::Draw()
 {
 	// draw the player according to animation state
-	switch(m_currentAnimationState)
+	switch (m_currentAnimationState)
 	{
 	case TorpedoAnimationState::FIRED:
-		TextureManager::Instance().PlayAnimation("torpedoKsheet", GetAnimation("fired"),
+		TextureManager::Instance().PlayAnimation("torpedosheet", GetAnimation("fired"),
 			GetTransform()->position, 5.0f, 0, 255, true);
 		break;
 	default:
